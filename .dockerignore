@@ -1,0 +1,45 @@
+# Development files
+environ.env
+.env
+.env.local
+.env.development
+.env.test
+
+# Local development
+venv/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database files
+arbitrage.db
+*.sqlite
+*.sqlite3
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+test_*.py
+*_test.py
+tests/
+
+# Local logs
+*.log
+
+# Git
+.git/
+.gitignore
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Development scripts
+run_dev.ps1 

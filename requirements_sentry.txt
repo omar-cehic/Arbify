@@ -1,0 +1,4 @@
+# Add these to your existing requirements.txt
+sentry-sdk[fastapi]==1.39.2
+sentry-sdk[sqlalchemy]==1.39.2
+sentry-sdk[logging]==1.39.2
