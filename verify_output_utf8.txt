@@ -1,3 +1,0 @@
-﻿[START] Starting Runtime Verification...
-
-[FAIL] Runtime Verification Failed: unterminated triple-quoted string literal (detected at line 1206) (main.py, line 1193)
