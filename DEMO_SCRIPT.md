@@ -6,40 +6,41 @@
 ---
 
 ### Phase 1: The "Hook" (0:00 - 0:10)
-**Visual:** Start immediately on the **Dashboard** (already logged in). Do not show the Login screen (it's boring).
+**Visual:** Start on the **Dashboard** (already logged in). 
 **Action:** Mouse over the "Live Markets" widget on the left.
 
 > "Hi, I'm Omar. This is **Arbify**, a high-frequency sports arbitrage engine I built using FastAPI and React.
-> Right now, you're looking at the **Mission Control Dashboard**, which monitors live data feeds from over 50 bookmakers in real-time."
+> Right now, you're looking at the **Command Center**, which gives me an instant status readout of active markets across 6 major sports leagues."
 
 ---
 
 ### Phase 2: The "Core Logic" (0:10 - 0:35)
-**Visual:** Click **"Find Opportunities"** (or Arbitrage tab).
+**Visual:** Click **"Find Opportunities"**.
 **Action:** 
-1. Quickly click a filter (e.g., "NBA" or "Spreads") to show UI responsiveness.
-2. Click the **"Calculate"** button on a card with a good ROI (e.g., >2%).
+1. Quickly click a filter (e.g., "NBA").
+2. Click the **"Calculate"** button on a good opportunity.
 
 > "The core engine processes thousands of odds updates per minute to find risk-free spreads.
-> Here it identified a **[3.2%]** ROI opportunity between DraftKings and FanDuel.
+> Here it identified a **[3.2%]** ROI opportunity.
 > By clicking **Calculate**, the system automatically solves for the optimal stake distribution to guarantee profit regardless of the game's outcome."
 
 ---
 
 ### Phase 3: The "Full Stack" Proof (0:35 - 0:50)
-**Visual:** Click the **"Save"** icon, then go to **Profile** -> **My Arbitrage**.
+**Visual:** Click **"Save"**, then go to **Profile** -> **My Arbitrage**.
 **Action:** Scroll through the saved history list.
 
-> "I also built a full persistence layer. Users can save opportunities to track their performance over time.
-> The backend handles secure data storage using **PostgreSQL** and **SQLAlchemy**, ensuring data integrity for every tracked bet."
+> "I also built a full persistence layer with **PostgreSQL**.
+> Users can save opportunities to track their performance over time, ensuring data integrity for every bet placed."
 
 ---
 
 ### Phase 4: Outro (0:50 - 1:00)
-**Visual:** Click **"Manage Account"** (or just stay on Profile). Briefly show the "Premium" badge.
+**Visual:** Click **"Manage Account"**. Briefly show the "Pro Plan".
 
-> "Arbify is a complete SaaS production environment, featuring **JWT authentication**, **Stripe subscription management**, and role-based access control.
-> Thanks for watching."
+> "Arbify is a production-hardened SaaS.
+> It features secure **JWT authentication**, a streamlined **single-tier subscription model** powered by Stripe, and scalable role-based access control.
+> It's not just a script—it's a platform. Thanks for watching."
 
 ---
 
