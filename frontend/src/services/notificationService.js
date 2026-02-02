@@ -93,13 +93,24 @@ class NotificationService {
 
       console.log('Checking for arbitrage opportunities...');
 
-      // Fetch current arbitrage opportunities
-      const response = await axios.get('/api/arbitrage/opportunities', {
-        timeout: 15000 // Increased to 15s to match login timeout buffer
+      // Fetch current arbitrage opportunities from SGO API
+      // Use cache (force_refresh=false) to be efficient
+      const response = await axios.get('/api/arbitrage/sgo', {
+        params: {
+          live_only: false,
+          min_profit: userPreferences.minimum_profit_threshold || 1.0,
+          force_refresh: false
+        },
+        timeout: 15000
       });
 
-      if (response.data && response.data.length > 0) {
-        this.processOpportunities(response.data, userPreferences);
+      if (response.data && response.data.arbitrage_opportunities && response.data.arbitrage_opportunities.length > 0) {
+        // Map SGO format to expected format if needed, or add 'match' property
+        const opportunities = response.data.arbitrage_opportunities.map(opp => ({
+          ...opp,
+          match: `${opp.home_team} vs ${opp.away_team}`
+        }));
+        this.processOpportunities(opportunities, userPreferences);
       }
     } catch (error) {
       // Only log significant errors, not 404s or network timeouts
