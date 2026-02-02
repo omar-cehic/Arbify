@@ -1,6 +1,7 @@
 /**
  * Notification Service for Arbify
  * Handles polling for new arbitrage opportunities and sending notifications
+ * Updated: 2026-02-02
  */
 
 import axios from 'axios';
