@@ -5,7 +5,6 @@
 **A modern SaaS platform that automates sports arbitrage betting opportunities with real-time odds scanning, smart calculators, and subscription-based premium features.**
 
 [![Status](https://img.shields.io/badge/Status-Beta-yellow.svg)](https://github.com/omar-cehic/Arbify)
-[![Last Deploy](https://img.shields.io/badge/Last_Deploy-Feb_04-green.svg)](https://github.com/omar-cehic/Arbify)
 [![License](https://img.shields.io/badge/License-Private-red.svg)](https://github.com/omar-cehic/Arbify)
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org)
