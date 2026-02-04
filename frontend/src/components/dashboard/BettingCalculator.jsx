@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { HiExternalLink, HiCash, HiCalculator, HiCheckCircle, HiInformationCircle, HiGlobeAlt } from 'react-icons/hi';
+import { HiExternalLink, HiCheckCircle, HiCalculator } from 'react-icons/hi';
 import { Helmet } from 'react-helmet-async';
 
 const BettingCalculator = () => {
@@ -175,48 +175,26 @@ const BettingCalculator = () => {
   const expectedProfit = queryParams.get('expectedProfit');
   const gameTime = queryParams.get('gameTime');
 
-  // Debug log to see what URL parameters we received
-  console.log('🔍 BettingCalculator Debug - URL params:', {
-    homeOdds: queryParams.get('homeOdds'),
-    awayOdds: queryParams.get('awayOdds'),
-    homeLabel,
-    awayLabel,
-    matchup,
-    sport,
-    market,
-    expectedProfit
-  });
-
   // Enhanced bookmaker matching function
   const findBookmakerByName = (bookmakerName, fallbackIndex = 0) => {
     if (!bookmakerName) return allSportsbooks[fallbackIndex];
 
     const cleanName = bookmakerName.toLowerCase().trim();
-    console.log(`🔍 Looking for bookmaker: "${cleanName}"`);
 
     // Try exact name match first
     let found = allSportsbooks.find(sb => sb.name.toLowerCase() === cleanName);
-    if (found) {
-      console.log(`✅ Found exact match: ${found.name}`);
-      return found;
-    }
+    if (found) return found;
 
     // Try key match (backend uses keys like 'prophetexchange', 'betmgm')
     found = allSportsbooks.find(sb => sb.key?.toLowerCase() === cleanName);
-    if (found) {
-      console.log(`✅ Found key match: ${found.name} (key: ${found.key})`);
-      return found;
-    }
+    if (found) return found;
 
     // Try partial name match
     found = allSportsbooks.find(sb =>
       sb.name.toLowerCase().includes(cleanName) ||
       cleanName.includes(sb.name.toLowerCase())
     );
-    if (found) {
-      console.log(`✅ Found partial match: ${found.name}`);
-      return found;
-    }
+    if (found) return found;
 
     // Special cases for known backend bookmaker names
     const specialMappings = {
@@ -237,13 +215,9 @@ const BettingCalculator = () => {
     const mappedName = specialMappings[cleanName];
     if (mappedName) {
       found = allSportsbooks.find(sb => sb.name.toLowerCase().includes(mappedName.toLowerCase()));
-      if (found) {
-        console.log(`✅ Found via special mapping: ${found.name}`);
-        return found;
-      }
+      if (found) return found;
     }
 
-    console.warn(`❌ No bookmaker found for "${cleanName}", using fallback: ${allSportsbooks[fallbackIndex].name}`);
     return allSportsbooks[fallbackIndex];
   };
 
@@ -369,279 +343,231 @@ const BettingCalculator = () => {
     });
   };
 
-  const getRegionColor = (region) => {
-    const colors = {
-      'us': 'border-yellow-500 text-yellow-400',
-      'us2': 'border-yellow-600 text-yellow-400',
-      'us_dfs': 'border-amber-500 text-amber-400',
-      'us_ex': 'border-yellow-400 text-yellow-300',
-      'uk': 'border-yellow-500 text-yellow-400',
-      'eu': 'border-amber-600 text-amber-400',
-      'au': 'border-yellow-600 text-yellow-500'
-    };
-    return colors[region] || 'border-yellow-500 text-yellow-400';
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white py-10">
+    <div className="min-h-screen bg-black text-white py-12">
       <Helmet>
-        <title>Arbitrage Calculator - Arbify</title>
-        <meta name="description" content="Calculate your arbitrage betting stakes and guaranteed profit with our advanced betting calculator." />
+        <title>Calculator | Arbify</title>
+        <meta name="description" content="Calculate your arbitrage betting stakes and guaranteed profit." />
       </Helmet>
+
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-5xl font-extrabold text-yellow-400 mb-4 flex items-center justify-center gap-3">
-            <HiCalculator className="h-12 w-12" />
+        {/* Simplified Header */}
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-medium tracking-wide text-white mb-2">
             Arbitrage Calculator
           </h1>
+          <p className="text-gray-400 text-sm uppercase tracking-widest">
+            Calculate Stakes • Secure Profit • Beat The Books
+          </p>
         </div>
 
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* Input Section */}
-          <div className="xl:col-span-1">
-            <div className="bg-gray-900 rounded-2xl p-6 border border-yellow-500/30 shadow-2xl">
-              <h2 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-                <HiCash className="h-6 w-6 text-yellow-400" />
-                Bet Configuration
-              </h2>
-
-              {/* Opportunity Info */}
-              {matchup && (
-                <div className="bg-gray-800/50 rounded-lg p-4 mb-6 border border-gray-700">
-                  <h3 className="text-yellow-400 font-semibold text-lg mb-2">{matchup}</h3>
-                  <div className="space-y-1 text-sm text-gray-300">
-                    {sport && league && <div><span className="text-gray-400">League:</span> {league}</div>}
-                    {gameTime && <div><span className="text-gray-400">Game Time:</span> {gameTime}</div>}
-                    {market && <div><span className="text-gray-400">Market:</span> {market}</div>}
-                    {expectedProfit && <div><span className="text-gray-400">Expected Profit:</span> <span className="text-green-400 font-medium">{expectedProfit}%</span></div>}
-                  </div>
+        {/* Opportunity Summary (if available) */}
+        {matchup && (
+          <div className="mb-8 p-6 bg-gray-900 border border-gray-800 rounded-xl max-w-4xl mx-auto shadow-2xl shadow-yellow-500/5">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div>
+                <h2 className="text-xl text-white font-medium mb-1">{matchup}</h2>
+                <div className="text-sm text-gray-500 flex gap-4">
+                  <span>{sport}</span>
+                  {market && <span>• {market}</span>}
+                </div>
+              </div>
+              {expectedProfit && (
+                <div className="px-4 py-2 bg-green-900/20 text-green-400 border border-green-800 rounded-lg">
+                  <span className="text-xs text-green-500 block">EXPECTED RETURN</span>
+                  <span className="text-lg font-bold">+{expectedProfit}%</span>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+          {/* LEFT COLUMN - Calculator Inputs */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
+              <h3 className="text-yellow-500 text-xs font-bold uppercase tracking-widest mb-6 border-b border-gray-800 pb-2">
+                Bet Configuration
+              </h3>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">Total Investment Amount</label>
+                  <label className="block text-xs font-medium mb-2 text-gray-400 uppercase tracking-wide">Total Investment</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-yellow-400 font-bold">$</span>
+                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-500 font-bold">$</span>
                     <input
                       type="number"
                       value={investment}
                       onChange={handleInvestmentChange}
-                      className="bg-black text-white pl-8 pr-4 py-3 rounded-lg w-full border border-yellow-500/50 focus:outline-none focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 transition-all"
+                      className="bg-black text-white pl-8 pr-4 py-4 rounded-xl w-full border border-gray-700 focus:outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 text-lg font-medium transition-all"
                       placeholder="100"
                     />
                   </div>
                 </div>
 
-                {/* Outcomes */}
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-300">Betting Outcomes</label>
+                  <div className="flex justify-between items-center">
+                    <label className="block text-xs font-medium text-gray-400 uppercase tracking-wide">Outcomes</label>
+                  </div>
+
                   {outcomes.map((outcome, index) => (
-                    <div key={index} className="p-4 bg-black rounded-xl border border-gray-700 hover:border-yellow-500/50 transition-all">
-                      <div className="flex justify-between items-center mb-3">
-                        <input
-                          type="text"
-                          value={outcome.name}
-                          onChange={(e) => handleOutcomeChange(index, 'name', e.target.value)}
-                          className="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-yellow-400 text-sm font-medium"
-                          placeholder="Outcome name"
-                        />
-                        {outcomes.length > 2 && (
-                          <button
-                            onClick={() => removeOutcome(index)}
-                            className="text-red-400 hover:text-red-300 text-sm transition-colors font-medium"
-                          >
-                            Remove
-                          </button>
-                        )}
+                    <div key={index} className="p-4 bg-black rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                      <div className="mb-3">
+                        <label className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Bookmaker</label>
+                        <select
+                          value={outcome.sportsbook?.name || allSportsbooks[0].name}
+                          onChange={(e) => {
+                            const selectedSportsbook = allSportsbooks.find(sb => sb.name === e.target.value);
+                            handleOutcomeChange(index, 'sportsbook', selectedSportsbook);
+                          }}
+                          className="bg-gray-900 text-white px-3 py-2 rounded-lg w-full border border-gray-700 focus:border-yellow-500 text-sm appearance-none"
+                        >
+                          {Object.entries(sportsbooksData).map(([region, books]) => (
+                            <optgroup key={region} label={region}>
+                              {books.map(sb => (
+                                <option key={sb.name} value={sb.name}>{sb.name}</option>
+                              ))}
+                            </optgroup>
+                          ))}
+                        </select>
                       </div>
 
-                      <div className="grid grid-cols-1 gap-3">
-                        <div>
-                          <label className="block text-xs text-gray-400 mb-1">Odds</label>
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <label className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Pick</label>
+                          <input
+                            type="text"
+                            value={outcome.name}
+                            onChange={(e) => handleOutcomeChange(index, 'name', e.target.value)}
+                            className="bg-gray-900 text-white px-3 py-2 rounded-lg w-full border border-gray-700 focus:border-yellow-500 text-sm"
+                            placeholder="Team/Outcome"
+                          />
+                        </div>
+                        <div className="w-24">
+                          <label className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Odds</label>
                           <input
                             type="number"
                             value={outcome.odds}
                             min="1.01"
                             step="0.01"
                             onChange={(e) => handleOutcomeChange(index, 'odds', parseFloat(e.target.value))}
-                            className="bg-gray-800 text-white px-3 py-2 rounded-lg w-full border border-gray-600 focus:outline-none focus:border-yellow-400"
-                            placeholder="2.00"
+                            className="bg-gray-900 text-white px-3 py-2 text-center rounded-lg w-full border border-gray-700 focus:border-yellow-500 text-sm font-bold text-yellow-400"
                           />
                         </div>
-
-                        <div>
-                          <label className="block text-xs text-gray-400 mb-1">Sportsbook</label>
-                          <select
-                            value={outcome.sportsbook?.name || allSportsbooks[0].name}
-                            onChange={(e) => {
-                              const selectedSportsbook = allSportsbooks.find(sb => sb.name === e.target.value);
-                              handleOutcomeChange(index, 'sportsbook', selectedSportsbook);
-                            }}
-                            className="bg-gray-800 text-white px-3 py-2 rounded-lg w-full border border-gray-600 focus:outline-none focus:border-yellow-400"
-                          >
-                            {Object.entries(sportsbooksData).map(([region, books]) => (
-                              <optgroup key={region} label={`━━━ ${region.toUpperCase()} ━━━`} className="bg-gray-900 text-yellow-400 font-bold">
-                                {books.map(sb => (
-                                  <option key={sb.name} value={sb.name} className="bg-gray-800 text-white font-normal pl-4">
-                                    {sb.name}
-                                  </option>
-                                ))}
-                              </optgroup>
-                            ))}
-                          </select>
-                        </div>
                       </div>
+
+                      {outcomes.length > 2 && (
+                        <div className="mt-2 text-right">
+                          <button onClick={() => removeOutcome(index)} className="text-xs text-red-500 hover:text-red-400">Remove</button>
+                        </div>
+                      )}
                     </div>
                   ))}
 
                   <button
                     onClick={addOutcome}
                     disabled={outcomes.length >= 5}
-                    className={`w-full py-3 rounded-lg border-2 border-dashed transition-all ${outcomes.length >= 5
-                      ? 'border-gray-600 text-gray-500 cursor-not-allowed'
-                      : 'border-yellow-500/50 text-yellow-400 hover:border-yellow-400 hover:bg-yellow-400/10'
-                      }`}
+                    className="w-full py-2 rounded-lg border border-dashed border-gray-700 text-gray-400 text-sm hover:border-yellow-500 hover:text-yellow-500 transition-all"
                   >
-                    + Add Another Outcome
+                    + Add Outcome
                   </button>
                 </div>
+              </div>
+            </div>
 
-                <button
-                  onClick={calculateArbitrage}
-                  className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black w-full py-3 rounded-lg font-bold hover:from-yellow-300 hover:to-yellow-400 transition-all transform hover:scale-105 shadow-lg"
-                >
-                  Calculate Arbitrage
-                </button>
+            {/* Quick Stats - Mobile Only (Stacks on bottom for desktop, but useful summary here) */}
+            <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 lg:hidden">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400">Total Profit</span>
+                <span className={`text-xl font-bold ${calculationResults?.profit > 0 ? 'text-green-400' : 'text-gray-500'}`}>
+                  ${calculationResults?.profit.toFixed(2) || '0.00'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-gray-400">ROI</span>
+                <span className={`text-lg font-medium ${calculationResults?.profitPercentage > 0 ? 'text-green-400' : 'text-gray-500'}`}>
+                  {calculationResults?.profitPercentage.toFixed(2) || '0.00'}%
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Results Section */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* Quick Results */}
-            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-700 shadow-2xl">
-              <h2 className="text-2xl font-semibold mb-6 flex items-center gap-3">
-                {calculationResults?.isArbitrage ? (
-                  <HiCheckCircle className="h-6 w-6 text-green-400" />
-                ) : (
-                  <HiCalculator className="h-6 w-6 text-yellow-400" />
-                )}
-                Calculation Results
-              </h2>
+          {/* RIGHT COLUMN - Instructions & Results */}
+          <div className="lg:col-span-8">
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-gray-800 shadow-2xl relative overflow-hidden">
+              {/* Background decorative glow */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 rounded-full filter blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="text-center p-4 bg-black rounded-xl border border-gray-700">
-                  <div className="text-2xl font-bold text-yellow-400">
+              <div className="flex justify-between items-end mb-8 relative z-10">
+                <div>
+                  <h2 className="text-2xl text-white font-medium">Betting Instructions</h2>
+                  <p className="text-gray-400 text-sm mt-1">Follow these steps exactly to secure your profit.</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400 uppercase tracking-widest mb-1">Guaranteed Profit</div>
+                  <div className={`text-4xl font-bold ${calculationResults?.profit > 0 ? 'text-green-400' : 'text-gray-500'}`}>
                     ${calculationResults?.profit.toFixed(2) || '0.00'}
                   </div>
-                  <div className="text-sm text-gray-400">Guaranteed Profit</div>
-                </div>
-
-                <div className="text-center p-4 bg-black rounded-xl border border-gray-700">
-                  <div className={`text-2xl font-bold ${calculationResults?.profitPercentage > 0 ? 'text-green-400' : 'text-gray-400'
-                    }`}>
-                    {calculationResults?.profitPercentage.toFixed(2) || '0.00'}%
-                  </div>
-                  <div className="text-sm text-gray-400">Profit Margin</div>
-                </div>
-
-                <div className="text-center p-4 bg-black rounded-xl border border-gray-700">
-                  <div className="text-2xl font-bold text-yellow-400">
-                    ${calculationResults?.totalReturn.toFixed(2) || '100.00'}
-                  </div>
-                  <div className="text-sm text-gray-400">Total Return</div>
-                </div>
-
-                <div className="text-center p-4 bg-black rounded-xl border border-gray-700">
-                  <div className={`text-2xl font-bold ${calculationResults?.isArbitrage ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                    {calculationResults?.isArbitrage ? 'YES' : 'NO'}
-                  </div>
-                  <div className="text-sm text-gray-400">Is Arbitrage?</div>
                 </div>
               </div>
 
-              {calculationResults?.isArbitrage && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 text-green-400 mb-2">
-                    <HiCheckCircle className="h-5 w-5" />
-                    <span className="font-semibold text-lg">Arbitrage Opportunity Detected</span>
-                  </div>
-                  <p className="text-gray-300">
-                    This is a guaranteed profit opportunity. Follow the betting instructions below to secure your ${calculationResults.profit.toFixed(2)} profit.
-                  </p>
-                </div>
-              )}
-            </div>
+              {/* VISUAL BET SLIPS */}
+              <div className="space-y-4 relative z-10">
+                {calculationResults && calculationResults.stakes.length > 0 ? (
+                  calculationResults.stakes.map((stake, index) => (
+                    <div key={index} className="group bg-black rounded-xl p-0 border border-gray-800 overflow-hidden hover:border-yellow-500/50 transition-all duration-300">
+                      <div className="flex flex-col md:flex-row h-full">
+                        {/* Step Number & Bookmaker Brand */}
+                        <div className="bg-gray-900 p-6 md:w-1/3 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-800 group-hover:bg-gray-800 transition-colors">
+                          <div className="text-xs text-yellow-500 font-bold uppercase tracking-widest mb-2">Step {index + 1}</div>
+                          <div className="text-2xl text-white font-bold mb-1">{stake.sportsbook.name}</div>
 
-            {/* Betting Instructions */}
-            {calculationResults && calculationResults.stakes.length > 0 && (
-              <div className="bg-gray-900 rounded-2xl p-6 border border-gray-700 shadow-2xl">
-                <h2 className="text-2xl font-semibold mb-6">Betting Instructions</h2>
-
-                <div className="space-y-4">
-                  {calculationResults.stakes.map((stake, index) => (
-                    <div key={index} className={`p-5 rounded-xl border-2 ${getRegionColor(stake.sportsbook.region)} bg-black hover:bg-gray-900 transition-all`}>
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h3 className="text-lg font-semibold text-white">{stake.name}</h3>
-                          <p className="text-sm text-gray-400">Step {index + 1} of {calculationResults.stakes.length}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-yellow-400">${stake.stake.toFixed(2)}</div>
-                          <div className="text-sm text-gray-400">{stake.percentage.toFixed(1)}% of total</div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                        <div>
-                          <p className="text-sm text-gray-400 mb-1">Bet on</p>
-                          <p className="font-semibold">{stake.name} @ {decimalToAmerican(stake.odds)}</p>
-                        </div>
-
-                        <div>
-                          <p className="text-sm text-gray-400 mb-1">Amount to bet</p>
-                          <p className="font-semibold text-yellow-400">${stake.stake.toFixed(2)}</p>
-                        </div>
-
-                        <div className="flex justify-end">
                           <a
                             href={stake.sportsbook.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border-2 ${getRegionColor(stake.sportsbook.region)} hover:bg-gray-800 transition-all transform hover:scale-105 font-medium`}
+                            className="inline-flex items-center gap-2 text-xs text-gray-400 hover:text-yellow-400 mt-2 transition-colors"
                           >
-                            <span className="font-semibold">{stake.sportsbook.name}</span>
-                            <HiExternalLink className="h-4 w-4" />
+                            Open Sportsbook <HiExternalLink />
                           </a>
                         </div>
-                      </div>
 
-                      <div className="mt-3 pt-3 border-t border-gray-700">
-                        <p className="text-sm text-gray-400">
-                          Potential return: <span className="text-white font-semibold">${(stake.stake * stake.odds).toFixed(2)}</span>
-                        </p>
+                        {/* Bet Details - "The Ticket" */}
+                        <div className="p-6 md:w-2/3 flex flex-col md:flex-row justify-between items-center gap-6">
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Bet Selection</div>
+                            <div className="text-xl text-white font-medium">{stake.name}</div>
+                            <div className="text-sm text-gray-400 mt-1">Odds: <span className="text-white">{decimalToAmerican(stake.odds)}</span> <span className="text-gray-600">({stake.odds})</span></div>
+                          </div>
+
+                          <div className="text-center md:text-right bg-gray-900/50 p-4 rounded-lg border border-gray-800/50 min-w-[140px]">
+                            <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Wager Amount</div>
+                            <div className="text-2xl font-bold text-yellow-400">${stake.stake.toFixed(2)}</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-
-                {calculationResults.isArbitrage && (
-                  <div className="mt-6 p-4 bg-gray-800 rounded-xl border border-gray-600">
-                    <h4 className="font-semibold text-yellow-400 mb-2">Pro Tips:</h4>
-                    <ul className="text-sm text-gray-300 space-y-1">
-                      <li>• Place all bets as quickly as possible to avoid odds changes</li>
-                      <li>• Double-check the odds before placing each bet</li>
-                      <li>• Consider using different devices/browsers for each sportsbook</li>
-                      <li>• Make sure you have sufficient funds in each account</li>
-                    </ul>
+                  ))
+                ) : (
+                  <div className="text-center py-20 bg-gray-900/30 rounded-xl border border-dashed border-gray-800">
+                    <HiCalculator className="h-12 w-12 text-gray-700 mx-auto mb-4" />
+                    <p className="text-gray-500">Enter odds to calculate optimal stakes</p>
                   </div>
                 )}
               </div>
-            )}
+
+              {calculationResults?.isArbitrage && (
+                <div className="mt-8 p-4 rounded-xl bg-green-900/10 border border-green-900/30 flex items-start gap-3">
+                  <HiCheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="text-green-400 font-bold text-sm uppercase tracking-wide mb-1">Arbitrage Opportunity Confirmed</h4>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      Use the exact wager amounts highlighted in yellow above. Place these bets simultaneously to lock in your <strong>${calculationResults.profit.toFixed(2)}</strong> profit.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -649,4 +575,4 @@ const BettingCalculator = () => {
   );
 };
 
-export default BettingCalculator; 
+export default BettingCalculator;
