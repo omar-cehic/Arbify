@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { HiExternalLink, HiCheckCircle, HiCalculator } from 'react-icons/hi';
+import { HiExternalLink, HiCheckCircle, HiCalculator, HiLightBulb, HiShieldCheck, HiCurrencyDollar } from 'react-icons/hi';
 import { Helmet } from 'react-helmet-async';
 
 const BettingCalculator = () => {
@@ -367,15 +367,16 @@ const BettingCalculator = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div>
                 <h2 className="text-xl text-white font-medium mb-1">{matchup}</h2>
-                <div className="text-sm text-gray-500 flex gap-4">
-                  <span>{sport}</span>
-                  {market && <span>• {market}</span>}
+                <div className="text-sm text-gray-500 flex gap-4 uppercase tracking-wider font-medium">
+                  <span className="text-yellow-500">{sport}</span>
+                  {league && <span className="text-gray-400">• {league}</span>}
+                  {market && <span className="text-gray-400">• {market}</span>}
                 </div>
               </div>
               {expectedProfit && (
-                <div className="px-4 py-2 bg-green-900/20 text-green-400 border border-green-800 rounded-lg">
-                  <span className="text-xs text-green-500 block">EXPECTED RETURN</span>
-                  <span className="text-lg font-bold">+{expectedProfit}%</span>
+                <div className="px-4 py-2 bg-gray-900 border border-green-900/50 rounded-lg shadow-[0_0_15px_-3px_rgba(16,185,129,0.1)]">
+                  <span className="text-xs text-green-500/80 block font-medium">EXPECTED RETURN</span>
+                  <span className="text-lg font-bold text-green-400">+{expectedProfit}%</span>
                 </div>
               )}
             </div>
@@ -475,7 +476,7 @@ const BettingCalculator = () => {
               </div>
             </div>
 
-            {/* Quick Stats - Mobile Only (Stacks on bottom for desktop, but useful summary here) */}
+            {/* Quick Stats - Mobile Only */}
             <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 lg:hidden">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Total Profit</span>
@@ -495,13 +496,13 @@ const BettingCalculator = () => {
           {/* RIGHT COLUMN - Instructions & Results */}
           <div className="lg:col-span-8 flex flex-col h-full">
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-gray-800 shadow-2xl relative overflow-hidden flex-grow">
-              {/* Background decorative glow */}
+              {/* Background decorative glow - Toned down */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 rounded-full filter blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
               <div className="flex justify-between items-end mb-8 relative z-10">
                 <div>
                   <h2 className="text-2xl text-white font-medium">Betting Instructions</h2>
-                  <p className="text-gray-400 text-sm mt-1">
+                  <p className="text-gray-400 text-sm mt-1 flex items-center gap-1">
                     Find this bet under: <span className="text-yellow-500 font-medium">{sport} {league ? `> ${league}` : ''} {'>'} {market || 'Moneyline'}</span>
                   </p>
                 </div>
@@ -559,7 +560,7 @@ const BettingCalculator = () => {
               </div>
 
               {calculationResults?.isArbitrage && (
-                <div className="mt-8 p-4 rounded-xl bg-green-900/10 border border-green-900/30 flex items-start gap-3">
+                <div className="mt-8 p-4 rounded-xl bg-gray-900 border border-green-900/50 flex items-start gap-3 shadow-[0_0_20px_-5px_rgba(16,185,129,0.1)]">
                   <HiCheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-green-400 font-bold text-sm uppercase tracking-wide mb-1">Arbitrage Opportunity Confirmed</h4>
@@ -571,22 +572,33 @@ const BettingCalculator = () => {
               )}
             </div>
 
-            {/* PRO TIPS SECTION */}
+            {/* PRO TIPS SECTION - Minimalist Style (No Emojis) */}
             <div className="mt-6 bg-gray-900 rounded-2xl p-6 border border-gray-800">
               <h3 className="text-sm font-bold text-white uppercase tracking-wide mb-4 flex items-center gap-2">
-                ⚡ Pro Tips for this Bet
+                Pro Tips for this Bet
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-black rounded-xl border border-gray-800">
-                  <div className="text-yellow-500 text-xs font-bold uppercase tracking-wider mb-1">Avoid Limits</div>
+                <div className="p-4 bg-black rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <HiShieldCheck className="text-yellow-500 h-4 w-4" />
+                    <span className="text-white text-xs font-bold uppercase tracking-wider">Avoid Limits</span>
+                  </div>
                   <p className="text-gray-400 text-xs leading-relaxed">Round your bets to the nearest dollar (e.g., $50 instead of $50.59) to avoid suspicion from bookmakers.</p>
                 </div>
-                <div className="p-4 bg-black rounded-xl border border-gray-800">
-                  <div className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">Verification</div>
+
+                <div className="p-4 bg-black rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <HiLightBulb className="text-yellow-500 h-4 w-4" />
+                    <span className="text-white text-xs font-bold uppercase tracking-wider">Verification</span>
+                  </div>
                   <p className="text-gray-400 text-xs leading-relaxed">Always verify lines match what you see here before placing <strong>any</strong> bets. Lines move fast.</p>
                 </div>
-                <div className="p-4 bg-black rounded-xl border border-gray-800">
-                  <div className="text-green-400 text-xs font-bold uppercase tracking-wider mb-1">Execution</div>
+
+                <div className="p-4 bg-black rounded-xl border border-gray-800 hover:border-gray-700 transition-colors">
+                  <div className="flex items-center gap-2 mb-2">
+                    <HiCurrencyDollar className="text-yellow-500 h-4 w-4" />
+                    <span className="text-white text-xs font-bold uppercase tracking-wider">Execution</span>
+                  </div>
                   <p className="text-gray-400 text-xs leading-relaxed">Open both sportsbooks first. Place the bet on the "Soft" book (slower to update) first, then the sharp one.</p>
                 </div>
               </div>
