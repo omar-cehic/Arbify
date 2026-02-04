@@ -3722,6 +3722,48 @@ class SGOProLiveService:
                 
                 # Extract market information for proper grouping
                 market_info = self._get_market_info(odd_id, sport)
+
+                # CRITICAL IMPROVEMENT: Enhance player name from metadata if generic
+                # SGO generic IDs often result in "Player Points" etc. We can look up the real name in the odds metadata
+                if "Player" in market_info.get("market_description", "") or "player_" in market_info.get("market_type", ""):
+                    try:
+                        # Look for player name in odd_data
+                        player_name_found = None
+                        
+                        # Check various metadata fields where SGO puts the name
+                        if odd_data.get("participant"):
+                            player_name_found = odd_data.get("participant")
+                        elif odd_data.get("player"):
+                            player_name_found = odd_data.get("player")
+                        elif odd_data.get("name") and " vs " not in odd_data.get("name", ""):
+                            # Sometimes 'name' is just the player name, avoiding matchup strings
+                            player_name_found = odd_data.get("name")
+                        
+                        # If found, update the descriptions
+                        if player_name_found:
+                            # Clean up name if needed
+                            player_name_found = player_name_found.replace("_", " ").title()
+                            
+                            # Replace "Player" literal with actual name
+                            current_desc = market_info.get("market_description", "")
+                            detailed_desc = market_info.get("detailed_market_description", "")
+                            
+                            # Only update if we are replacing a generic term
+                            if "Player" in current_desc:
+                                market_info["market_description"] = current_desc.replace("Player", player_name_found)
+                            else:
+                                # Prepend if missing
+                                market_info["market_description"] = f"{player_name_found} {current_desc}"
+                                
+                            if "Player" in detailed_desc:
+                                market_info["detailed_market_description"] = detailed_desc.replace("Player", player_name_found)
+                            else:
+                                market_info["detailed_market_description"] = f"{player_name_found} {detailed_desc}"
+                                
+                            # logger.debug(f"✅ ENHANCED PLAYER NAME: {player_name_found} for {odd_id}")
+                    except Exception as e:
+                        # logger.warning(f"Failed to enhance player name: {e}")
+                        pass
                 
                 # DEBUG: Reduced logging to prevent Railway rate limits
                 # DEBUG: Enhanced market recognition logging
