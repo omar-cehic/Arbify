@@ -493,15 +493,17 @@ const BettingCalculator = () => {
           </div>
 
           {/* RIGHT COLUMN - Instructions & Results */}
-          <div className="lg:col-span-8">
-            <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-gray-800 shadow-2xl relative overflow-hidden">
+          <div className="lg:col-span-8 flex flex-col h-full">
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-8 border border-gray-800 shadow-2xl relative overflow-hidden flex-grow">
               {/* Background decorative glow */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 rounded-full filter blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
               <div className="flex justify-between items-end mb-8 relative z-10">
                 <div>
                   <h2 className="text-2xl text-white font-medium">Betting Instructions</h2>
-                  <p className="text-gray-400 text-sm mt-1">Follow these steps exactly to secure your profit.</p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    Find this bet under: <span className="text-yellow-500 font-medium">{sport} {league ? `> ${league}` : ''} {'>'} {market || 'Moneyline'}</span>
+                  </p>
                 </div>
                 <div className="text-right">
                   <div className="text-xs text-gray-400 uppercase tracking-widest mb-1">Guaranteed Profit</div>
@@ -567,6 +569,27 @@ const BettingCalculator = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* PRO TIPS SECTION */}
+            <div className="mt-6 bg-gray-900 rounded-2xl p-6 border border-gray-800">
+              <h3 className="text-sm font-bold text-white uppercase tracking-wide mb-4 flex items-center gap-2">
+                ⚡ Pro Tips for this Bet
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-black rounded-xl border border-gray-800">
+                  <div className="text-yellow-500 text-xs font-bold uppercase tracking-wider mb-1">Avoid Limits</div>
+                  <p className="text-gray-400 text-xs leading-relaxed">Round your bets to the nearest dollar (e.g., $50 instead of $50.59) to avoid suspicion from bookmakers.</p>
+                </div>
+                <div className="p-4 bg-black rounded-xl border border-gray-800">
+                  <div className="text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">Verification</div>
+                  <p className="text-gray-400 text-xs leading-relaxed">Always verify lines match what you see here before placing <strong>any</strong> bets. Lines move fast.</p>
+                </div>
+                <div className="p-4 bg-black rounded-xl border border-gray-800">
+                  <div className="text-green-400 text-xs font-bold uppercase tracking-wider mb-1">Execution</div>
+                  <p className="text-gray-400 text-xs leading-relaxed">Open both sportsbooks first. Place the bet on the "Soft" book (slower to update) first, then the sharp one.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

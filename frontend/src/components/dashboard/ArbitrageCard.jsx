@@ -389,7 +389,14 @@ const ArbitrageCard = ({ opportunity, onSave, userTier }) => {
     // Add match information
     params.append('matchup', `${opportunity.home_team} vs ${opportunity.away_team}`);
     params.append('sport', opportunity.sport || opportunity.sport_title || 'Unknown');
-    params.append('market', getMarketDescription(opportunity.market_type, oddsData, side1, side2));
+    params.append('league', opportunity.league || '');
+
+    // Prefer detailed market description if available for clarity
+    const marketDesc = opportunity.detailed_market_description ||
+      opportunity.market_description ||
+      getMarketDescription(opportunity.market_type, oddsData, side1, side2);
+
+    params.append('market', marketDesc);
     params.append('expectedProfit', opportunity.profit_percentage.toFixed(2));
 
     // Navigate to calculator with pre-populated data
@@ -505,8 +512,8 @@ Profit: $${guaranteedProfit.toFixed(2)}`;
           onClick={handleSave}
           disabled={isSaved}
           className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-colors ${isSaved
-              ? 'bg-green-600 text-white cursor-default'
-              : 'bg-gray-600 hover:bg-gray-700 text-white'
+            ? 'bg-green-600 text-white cursor-default'
+            : 'bg-gray-600 hover:bg-gray-700 text-white'
             }`}
         >
           {isSaved ? 'Saved' : 'Save'}
